@@ -1,12 +1,12 @@
 # Fdb version 3
-["biber notes"] 1679085925 "notes.bcf" "notes.bbl" "notes" 1679093610
-  "notes.bcf" 1679085928 106861 290673b802b46c6d6230a56e11b025cd "pdflatex"
+["biber notes"] 1679085925 "notes.bcf" "notes.bbl" "notes" 1679096655
+  "notes.bcf" 1679095146 106861 290673b802b46c6d6230a56e11b025cd "pdflatex"
   (generated)
   "notes.blg"
   "notes.bbl"
-["pdflatex"] 1679085927 "/Users/qingyao/Documents/GitHub/branchingmodel/notes.tex" "/Users/qingyao/Documents/GitHub/branchingmodel/notes.pdf" "notes" 1679093610
-  "/Users/qingyao/Documents/GitHub/branchingmodel/notes.aux" 1679085928 1823 e437e9c5408a834a09cd58168c34b6d7 ""
-  "/Users/qingyao/Documents/GitHub/branchingmodel/notes.tex" 1679093610 7236 ccec1edec18befaca60158d630ee02a9 ""
+["pdflatex"] 1679095145 "/Users/qingyao/Documents/GitHub/branchingmodel/notes.tex" "/Users/qingyao/Documents/GitHub/branchingmodel/notes.pdf" "notes" 1679096655
+  "/Users/qingyao/Documents/GitHub/branchingmodel/notes.aux" 1679095146 1823 e437e9c5408a834a09cd58168c34b6d7 ""
+  "/Users/qingyao/Documents/GitHub/branchingmodel/notes.tex" 1679096654 7387 35859d139175ed0dd728d4cdeaef94c2 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/local/texlive/2021/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
@@ -155,17 +155,17 @@
   "/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1616695603 5169178 a2ce6e2d73f603b690db6777d06dbccb ""
   "/usr/local/texlive/2021/texmf-var/web2c/pdftex/pdflatex.fmt" 1646289369 2724737 53896954c7ce30d79aca0a9c306902ca ""
   "/usr/local/texlive/2021/texmf.cnf" 1616695596 577 4c1911a7228e554c6032256d3cf5567d ""
-  "notes.aux" 1679085928 1823 e437e9c5408a834a09cd58168c34b6d7 "pdflatex"
+  "notes.aux" 1679095146 1823 e437e9c5408a834a09cd58168c34b6d7 "pdflatex"
   "notes.bbl" 1679085926 466 f7f239c736cf01ac6ce7bd829f9b3c7b "biber notes"
-  "notes.out" 1679085928 436 12e79a859ae923d370e16d9fc043e38e "pdflatex"
-  "notes.run.xml" 1679085928 2314 5c9ad8be4bb9eb699267c23d985ccd74 "pdflatex"
-  "notes.tex" 1679093610 7236 ccec1edec18befaca60158d630ee02a9 ""
+  "notes.out" 1679095146 436 12e79a859ae923d370e16d9fc043e38e "pdflatex"
+  "notes.run.xml" 1679095146 2314 5c9ad8be4bb9eb699267c23d985ccd74 "pdflatex"
+  "notes.tex" 1679096654 7387 35859d139175ed0dd728d4cdeaef94c2 ""
   (generated)
-  "notes.log"
-  "/Users/qingyao/Documents/GitHub/branchingmodel/notes.log"
   "/Users/qingyao/Documents/GitHub/branchingmodel/notes.pdf"
-  "notes.run.xml"
   "notes.out"
-  "notes.aux"
-  "notes.pdf"
   "notes.bcf"
+  "notes.aux"
+  "/Users/qingyao/Documents/GitHub/branchingmodel/notes.log"
+  "notes.log"
+  "notes.pdf"
+  "notes.run.xml"

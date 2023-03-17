@@ -132,7 +132,7 @@ P(N(t)) = \prod_{i=1}^{N(t)} \sum_{x=1}^{\infty} \frac{1}{x} \frac{\Gamma(x+r)}{
 
 In the branching process model, the number of infections caused by each infected person (i.e., secondary infections) is represented by a negative binomial distribution $\mathcal{NB}(R_{0}, r)$ with a mean reproductive number $R_{0}$ and a dispersion parameter $r \in (0, +\infty)$. For a fixed , a smaller  means a larger variation in secondary infections, that is, rarer but more explosive superspreading events. By varying the dispersion parameter , we can control individual transmission heterogeneity in the model. 
 
-A sequence of independent random variables $X_1, X_2, \ldots$ is said to have a negative binomial distribution with parameters $r$ and $p$ if the probability mass function is given by
+A sequence of independent random variables $X_1, X_2, \ldots$ is said to have a negative binomial distribution with parameters $r$ and $p$. In each trial, the probability of success is $p$ and the probability of failure is $1-p$. The number of failures before the $r$th success is $X$. The probability mass function of $x$ is given by
 
 \begin{equation}
     f(x) = \binom{x+r-1}{r-1} p^r (1-p)^x, \quad x = 0, 1, 2, \ldots
