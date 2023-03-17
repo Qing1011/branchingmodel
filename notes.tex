@@ -1,0 +1,162 @@
+\documentclass{article}
+
+% \usepackage{latex_graph}
+
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=2cm]{geometry}
+
+% https://tex.stackexchange.com/questions/17877/how-to-show-subsubsections-and-paragraphs-in-toc
+\setcounter{tocdepth}{5}
+\setcounter{secnumdepth}{5}
+
+% columns
+\usepackage{multicol}
+
+% paragraphs
+\usepackage{parskip}
+
+% math
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+% qoutes
+\usepackage{dirtytalk}
+
+% dates
+\usepackage{datetime2}
+
+% citations
+\usepackage{biblatex} % https://www.overleaf.com/learn/latex/Biblatex_citation_styles
+\addbibresource{./references.bib}
+% https://www.overleaf.com/learn/latex/Questions/Creating_multiple_bibliographies_in_the_same_document#With_biblatex
+
+% https://www.overleaf.com/learn/latex/Inserting_Images
+\usepackage{graphicx} %package to manage images
+\graphicspath{{assets/}{../assets/}}
+
+% https://tex.stackexchange.com/questions/23556/how-to-insert-figures-in-two-columns
+\usepackage{float}
+
+% code
+\usepackage{listings}
+% \usepackage{minted}
+
+% https://tex.stackexchange.com/questions/54946/how-to-break-a-long-url
+\usepackage{xurl}
+
+% https://www.reddit.com/r/LaTeX/comments/obb0ih/reduce_line_spacing_in_itemized_list/
+% \usepackage{enumitem}
+% \setlist[itemize]{noitemsep}
+
+% https://tex.stackexchange.com/questions/4902/why-is-my-footnote-glued-to-the-text
+\usepackage[bottom]{footmisc}
+
+% https://tex.stackexchange.com/questions/12262/multicol-and-figures
+\usepackage{caption}
+\newenvironment{Figure}
+    {\par\medskip\noindent\minipage{\linewidth}}
+    {\endminipage\par\medskip}
+
+\usepackage{hyperref}
+
+% markdown
+\usepackage[fencedCode,inlineFootnotes,citations,definitionLists,hashEnumerators,smartEllipses,pipeTables,tableCaptions,hybrid]{markdown}
+
+% https://github.com/James-Yu/LaTeX-Workshop/wiki/FAQ#how-to-pass--shell-escape-to-latexmk
+% .latexmkrc
+% https://tex.stackexchange.com/questions/88740/what-does-shell-escape-do
+% https://github.com/Witiko/markdown/issues/6
+
+% https://tex.stackexchange.com/questions/9852/what-is-the-difference-between-page-break-and-new-page
+
+% https://tex.stackexchange.com/questions/2734/taking-unncessary-space-after-e-g-or-i-e
+
+% https://github.com/James-Yu/LaTeX-Workshop/wiki/Compile#multi-file-projects
+\usepackage{xr-hyper} % http://mirrors.ctan.org/macros/latex/contrib/subfiles/subfiles.pdf
+\usepackage{subfiles} % Best loaded last in the preamble https://www.overleaf.com/learn/latex/Multi-file_LaTeX_projects
+
+% links
+\usepackage{hyperref} % https://www.overleaf.com/learn/how-to/Cross_referencing_with_the_xr_package_in_Overleaf
+\hypersetup{
+    colorlinks  = true,
+    linkcolor   = blue,
+    filecolor   = blue,      
+    urlcolor    = blue,
+    citecolor   = blue,
+    }
+\externaldocument[subfiles-]{\subfix{main}} % http://mirrors.ctan.org/macros/latex/contrib/subfiles/subfiles.pdf
+
+\title{Branching model in spatial spread of COVID-19}
+\date{\today}
+
+\begin{document}
+
+\setlength{\parindent}{0cm}
+
+\maketitle
+
+\section{Motivation}
+Empirical studies have found transmission is highly variable from person to person for  several respiratory viruses, including SARS-CoV-2.
+
+\section{Model}
+\subsection{Branching process}
+\subsubsection*{Galton-Watson branching process}
+
+Galton-Watson branching process (GWB) is a stochastic process that describes the growth of a population in which offspring are generated at random. The number of offspring of each individual is a random variable with a fixed distribution. The offspring of each individual are independent of each other. The population size at time $t$ is denoted by $N(t)$. The population size at time $t+1$ is given by
+\begin{equation}
+N(t+1) = \sum_{i=1}^{N(t)} X_i,
+\end{equation}
+where $X_i$ is the number of offspring of individual $i$ at time $t$. The distribution of $X_i$ is assumed to be fixed and independent of $i$. The population size at time $t$ is a random variable with a distribution $P(N(t))$. The distribution of $N(t)$ is given by.
+
+\subsubsection*{Age-dependent branching process}
+Age-dependent branching process (ADBP) is a generalization of the GWB. The number of offspring of each individual is a random variable with a distribution that depends on the age of the individual. The distribution of $X_i$ is given by
+\begin{equation}
+P(X_i = x) = \sum_{j=1}^{x} \frac{1}{j} \pi_j,
+\end{equation}
+where $\pi_j$ is the probability that an individual of age $j$ has $x$ offspring. The distribution of $N(t)$ is given by
+\begin{equation}
+P(N(t)) = \prod_{i=1}^{N(t)} \sum_{x=1}^{\infty} \frac{1}{x} \pi_x P(X_i = x).
+\end{equation}
+
+\subsubsection*{Bellman-Harris branching process}
+Bellman-Harris branching process (BHBP) is a special case of the ADBP. The number of offspring of each individual is a random variable with a negative binomial distribution. The distribution of $X_i$ is given by
+\begin{equation}
+P(X_i = x) = \frac{1}{x} \frac{\Gamma(x+r)}{\Gamma(x+1) \Gamma(r)} (1-p)^r p^x,
+\end{equation}
+where $p$ is the probability that an individual has $x$ offspring and $r$ is the dispersion parameter. The distribution of $N(t)$ is given by
+\begin{equation}
+P(N(t)) = \prod_{i=1}^{N(t)} \sum_{x=1}^{\infty} \frac{1}{x} \frac{\Gamma(x+r)}{\Gamma(x+1) \Gamma(r)} (1-p)^r p^x.
+\end{equation}
+
+\subsubsection*{Negative binomial distribution}
+
+In the branching process model, the number of infections caused by each infected person (i.e., secondary infections) is represented by a negative binomial distribution $\mathcal{NB}(R_{0}, r)$ with a mean reproductive number $R_{0}$ and a dispersion parameter $r \in (0, +\infty)$. For a fixed , a smaller  means a larger variation in secondary infections, that is, rarer but more explosive superspreading events. By varying the dispersion parameter , we can control individual transmission heterogeneity in the model. 
+
+A sequence of independent random variables $X_1, X_2, \ldots$ is said to have a negative binomial distribution with parameters $r$ and $p$ if the probability mass function is given by
+
+\begin{equation}
+    f(x) = \binom{x+r-1}{r-1} p^r (1-p)^x, \quad x = 0, 1, 2, \ldots
+\end{equation}
+where $\binom{x+r-1}{r-1} = \frac{(x+r-1)!}{x! (r-1)!}$ is the binomial coefficient. The mean and variance of the distribution are given by
+\begin{equation}
+    \mathbb{E}[X] = \frac{rp}{1-p}, \quad \text{Var}[X] = \frac{rp}{(1-p)^2}.
+\end{equation}
+
+\begin{equation}
+P(X_i = x) = \frac{1}{x} \frac{\Gamma(x+r)}{\Gamma(x+1) \Gamma(r)} (1-p)^r p^x,
+\end{equation}
+where $p = R_{0} / (R_{0} + 1)$ and $r$ is the dispersion parameter. The distribution of $N(t)$ is given by
+\begin{equation}
+P(N(t)) = \prod_{i=1}^{N(t)} \sum_{x=1}^{\infty} \frac{1}{x} \frac{\Gamma(x+r)}{\Gamma(x+1) \Gamma(r)} (1-p)^r p^x.
+\end{equation}
+
+\subsection{Spatial spread}
+\subsubsection*{Qing's comments}
+The spatial spread of the disease is modeled as a branching process on a network. The network is a graph with nodes representing individuals and edges representing contacts between different locations. The number of secondary infections caused by each infected person is a random variable with a distribution that depends on the age of the individual. The distribution of $X_i$ is given by
+\begin{equation}
+P(X_i = x) = \sum_{j=1}^{x} \frac{1}{j} \pi_j,
+\end{equation}
+
+\printbibliography
+
+\end{document}
