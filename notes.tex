@@ -137,11 +137,11 @@ A sequence of independent random variables $X_1, X_2, \ldots$ is said to have a 
 \begin{equation}
     f(x) = \binom{x+r-1}{r-1} p^r (1-p)^x, \quad x = 0, 1, 2, \ldots
 \end{equation}
-where $\binom{x+r-1}{r-1} = \frac{(x+r-1)!}{x! (r-1)!}$ is the binomial coefficient. The mean and variance of the distribution are given by
+where $\binom{x+r-1}{r-1} = \binom{x+r-1}{x}  = \frac{(x+r-1)!}{x! (r-1)!}$ is the binomial coefficient. The mean and variance of the distribution are given by
 \begin{equation}
     \mathbb{E}[X] = \frac{rp}{1-p}, \quad \text{Var}[X] = \frac{rp}{(1-p)^2}.
 \end{equation}
-
+When the definition of $r$ extended to real number, not just the interger, the distribution is called the generalized negative binomial distribution. The probability mass function of $x$ is given by
 \begin{equation}
 P(X_i = x) = \frac{1}{x} \frac{\Gamma(x+r)}{\Gamma(x+1) \Gamma(r)} (1-p)^r p^x,
 \end{equation}
@@ -149,6 +149,7 @@ where $p = R_{0} / (R_{0} + 1)$ and $r$ is the dispersion parameter. The distrib
 \begin{equation}
 P(N(t)) = \prod_{i=1}^{N(t)} \sum_{x=1}^{\infty} \frac{1}{x} \frac{\Gamma(x+r)}{\Gamma(x+1) \Gamma(r)} (1-p)^r p^x.
 \end{equation}
+
 
 \subsection{Spatial spread}
 \subsubsection*{Qing's comments}
