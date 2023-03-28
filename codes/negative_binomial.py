@@ -49,7 +49,7 @@ def branchingmodel(r):
     l0 = 1859  # New York County NY
     NewInf[l0, 0, :] = 100
     
-    for t in range(T):
+    for t in range(T): ## every time steps generate a different ensembles
         print(t+1)
         for k in range(num_ens):
             # branching process
