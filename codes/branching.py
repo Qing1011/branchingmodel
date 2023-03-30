@@ -1,82 +1,57 @@
 import numpy as np
+import matplotlib.pyplot as plt
+from scipy.io import loadmat, savemat
+import pandas as pd
+import scipy.special as SS
+import scipy.stats as SSA
+import copy
 import random
 import math
+from numba import njit
 
-def mexFunction(nlmxhs, plhs, nrhs, prhs):
+## the model input neighbour list, idx, probability, time, the previous infections, parameters, population size 
+## the model output for kth ensemble, the county everytime
+## it iterates every time
+@numba.jit(nopython=True)
+def superspreading_T_Loc(T,num_fips,initials,weights_n,pop,paras,WN):
+    Z, Zb, D, Db = paras
+    ## initialise 
+    l0, i0 = initials
+    
+    NewInf = np.zeros((num_fips,T*10))
+    TotInf = np.zeros((num_fips,T*10))
+    
+    NewInf[l0,0] = i0
+    TotInf[:,0] = NewInf[:,0]
+    ### for each time step and each location
+    for ti in range(T):
+        print(ti)
+        for l in range(num_fips):
+            infectors = int(NewInf[l,ti])
+            ### the number of possible new infections the size = 100 can infect individually from the NB 
+            z_all = np.random.choice(len(weights_n), size = infectors, p=weights_n) ## this is a vector
+            ### however, the populations have immunited people, the number will decrease i did not agree with this part 
+            ## as the infection happens inside the location of the infectious people, for immunity is the pop of the 
+            z_immunity = np.round(z_all*(1-TotInf[l,ti]/pop[l]))
+            
+            z_num = np.int64(np.sum(z_immunity))
+            NF_l = np.zeros((2,z_num),dtype=np.int64)
+            ## for the time distribution
+            latency_p = SSA.gamma.rvs(a = Z,scale=Zb,size = z_num)
+            infectious_p = SSA.gamma.rvs(a = D,scale=Db,size = z_num)
+            v = np.random.random_sample(z_num)
+            delay_days = latency_p+v*infectious_p
 
-    # declare variables
-    mxnl, mxpart, mxw, mxT0, mxNewInf, mxpara, mxpop = prhs
-    # input variables
-    nl = mxnl.copy()
-    part = mxpart.copy()
-    w = mxw.copy()
-    T0 = mxT0.copy()
-    NewInf = mxNewInf.copy()
-    para = mxpara.copy()
-    pop = mxpop.copy()
-    # figure out dimensions
-    num_mp, num_loc = nl.shape[0], part.shape[0]-1
-    T = NewInf.shape[1]
-    # associate outputs
-    mxNewInf1 = plhs[0] = np.zeros((num_loc, T), dtype=np.double)
-    # output variables
-    NewInf1 = mxNewInf1
-    # do something
-    generator = random.Random()
-    generator.seed() # uses system time as seed
-    # initialize auxiliary variables
-    totalinfection = np.zeros(num_loc, dtype=np.double)
-    # change index in nl and part (0-based index)
-    nl -= 1
-    part -= 1
-    Tcnt = T0[0]-1 # the current time (note index from 0)
-    # total infection
-    for l in range(num_loc):
-        totalinfection[l] = NewInf[l:Tcnt*num_loc+1:num_loc].sum()
-    # initialize NewInf1
-    NewInf1[:,:] = NewInf[:,:]
-    # prepare generators
-    # para: R0,r,Z;Zb;D;Db,alpha
-    R0, r = para[0], para[1]
-    p = r / (R0 + r)
-    # use a discrete distribution to generate NB
-    # prepare NB pdf
-    weights = []
-    for k in range(500):
-        weight = math.exp(-para[5]*(k**para[6]))
-        weights.append(weight)
-    # normalize pdf
-    sum_weights = sum(weights)
-    weights = [w/sum_weights for w in weights]
-    # generate NB
-    nb_rvs = np.random.choice(np.arange(500), size=100000, replace=True, p=weights)
-    # branching process simulation
-    for i in range(num_mp):
-        k = 0
-        while True:
-            # infectors
-            inf_inds = np.random.choice(np.where(pop[nl[i],:] > 0)[0], size=pop[nl[i],:].sum(), replace=True)
-            newinfection = len(inf_inds)
-            if newinfection == 0:
-                break
-            k += 1
-            # locations of infectors
-            locs = np.searchsorted(part, inf_inds, side='right') - 1
-            # infected individuals
-            infected = np.zeros(num_loc, dtype=np.double)
-            for j in range(newinfection):
-                loc = locs[j]
-                v = generator.uniform(0, 1)
-                if v < w[loc]:
-                    infected[loc] += 1
-            # update NewInf1
-            NewInf1[:, Tcnt] += infected
-            # stop simulation if no new infections
-            if sum(infected) == 0:
-                break
-            # stopping rule: exceed threshold of total infections
-            if k >= nb_rvs[newinfection-1]:
-                break
-        # move to the next subpopulation
-        Tcnt += 1
-       
+            NF_l[0,:] = np.ceil(delay_days+ti) ## make it idx int
+            ## for the location distribution
+            loc_idx = np.random.choice(np.arange(num_fips), size = z_num, p=WN[:,l])
+            NF_l[1,:] = loc_idx
+
+            ## infections merge into the matrix
+            NewInf_l = np.zeros_like(NewInf)
+            for i in range(z_num):
+                t_i, loc_i = NF_l[:,i]
+                NewInf_l[loc_i,t_i] = NewInf_l[loc_i,t_i]+1
+            NewInf = NewInf + NewInf_l
+            TotInf = np.cumsum(NewInf,axis=1)
+    return NewInf, TotInf
