@@ -40,7 +40,7 @@ def superspreading_T_Loc(T,num_fips,initials,weights_n,pop,paras,WN):
     NewInf[l0,0] = i0
     TotInf[:,0] = NewInf[:,0]
     for ti in range(T):
-        print(ti)
+        # print(ti)
         infectors = np.int64(NewInf[:,ti])
         total_num_infectors = np.sum(infectors)
         pop_immu = 1-TotInf[:,ti]/pop[:]
@@ -54,11 +54,13 @@ def superspreading_T_Loc(T,num_fips,initials,weights_n,pop,paras,WN):
 
         z_num = np.int64(np.sum(total_new))
         NF = np.zeros((2,z_num),dtype=np.int64)
-        ## for the time distribution
+        # for the time distribution
         latency_p = SSA.gamma.rvs(a = Z,scale=Zb,size = z_num)
         infectious_p = SSA.gamma.rvs(a = D,scale=Db,size = z_num)
         v = np.random.random_sample(z_num)
-        delay_days = latency_p+v*infectious_p
+        delay_days = latency_p+v*infectious_p  #3+5*0.5
+        
+        
         NF[0,:] = np.ceil(delay_days+ti) ## make it idx int
         ## for the location distribution
         NF[1,:] = totoal_new_infection_loc
