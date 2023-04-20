@@ -44,6 +44,7 @@ def superspreading_T_Loc(T,num_fips,initials,weights_n,pop,paras,WN):
         infectors = np.int64(NewInf[:,ti])
         total_num_infectors = np.sum(infectors)
         pop_immu = 1-TotInf[:,ti]/pop[:]
+        pop_immu[pop_immu<0] = 0
         immu_all = [] ### create list of immu_prob * number of infectors
         for idx in range(len(pop_immu)):
             pop_immu_i  = [pop_immu[idx]]*infectors[idx]
