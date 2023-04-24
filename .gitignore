@@ -279,4 +279,6 @@ TSWLatexianTemp*
 *.mat
 *.csv
 *.xlsx
+*.npy
+*.npy.gz
 
