@@ -29,7 +29,7 @@ def main():
 
     num_fips = len(pop)
     T = 60
-    num_ens = 10
+    num_ens = 500
 
     # pathogen characteristics
     # initialize parameters
@@ -55,18 +55,21 @@ def main():
     weights_n = weights/np.sum(weights)
     print(r)
 
-    E_NewInf = np.zeros((num_ens, num_fips,T*10))
-    E_TotInf = np.zeros((num_ens, num_fips,T*10))
+    # E_NewInf = np.zeros((num_ens, num_fips,T*10))
+    # E_TotInf = np.zeros((num_ens, num_fips,T*10))
 
     for en_i in range(num_ens):
-        print(en_i)
-        E_NewInf[en_i], E_TotInf[en_i] = superspreading_T_Loc(T,num_fips,(l0,i0),weights_n,pop,(Z,Zb,D,Db),WN)
+        # print(en_i)
+        E_NewInf, E_TotInf = superspreading_T_Loc(T,num_fips,(l0,i0),weights_n,pop,(Z,Zb,D,Db),WN)
 
-    # np.save('NewInf_r_{}_randm'.format(r),E_NewInf)
-    save_dir = '/ifs/scratch/msph/ehs/qy2290/branching_results/'
-    f = gzip.GzipFile(save_dir+"NewInf_R0-{}_r-{}.npy.gz" .format(np.round(R0,2),np.round(r,2)), "w")
-    np.save(file=f, arr=E_NewInf)
-    f.close()
+        # np.save('NewInf_r_{}_randm'.format(r),E_NewInf)
+        save_dir = '/ifs/scratch/msph/ehs/qy2290/branching_results/'
+        f = gzip.GzipFile(save_dir+"NewInf_R0-{}_r-{}_{}.npy.gz" .format(np.round(R0,2),np.round(r,2),en_i), "w")
+        np.save(file=f, arr=E_NewInf)
+        f.close()
+        # f = save_dir+"NewInf_R0-{}_r-{}.txt" .format(np.round(R0,2),np.round(r,2))
+        # np.savetxt(f, E_NewInf)
+        
 
 if __name__== "__main__":
     main()

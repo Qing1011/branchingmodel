@@ -1,8 +1,9 @@
 #!/bin/bash
 #$ -cwd -S /bin/bash
-#$ -l mem=2G
-#$ -l time=13:00:00
+#$ -l mem=3G
+#$ -l time=12:00:00
 #$ -N test -j y
+
 
 
 module load anaconda/conda3                      # load anaconda.
