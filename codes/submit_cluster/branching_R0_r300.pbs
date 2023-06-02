@@ -1,9 +1,9 @@
 #PBS -l walltime=70:00:00
 #PBS -l select=1:ncpus=1:mem=2gb
-#PBS -J 301-500
+#PBS -J 501-600
 
 module load anaconda3/personal
 source activate motifenv
 
 cd $HOME/branching/
-python branching_cluster_ic_en.py $PBS_ARRAY_INDEX –o output.txt
+python3 branching_cluster_ic_en.py $PBS_ARRAY_INDEX –o output.txt

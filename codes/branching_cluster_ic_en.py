@@ -36,16 +36,19 @@ def main():
     R0 = para_i['R0']
     r = para_i['r']
     ## check if the file exists
-    check_dir = '/rds/general/user/qy1815/ephemeral/branching_results300/'
-    file_name = check_dir+"NewInf_R0-{}_r-{}.npy.gz" .format(np.round(R0,2),np.round(r,2))
-    if check_file_exists(file_name):
-        num_ens = 400
-        save_dir = '/rds/general/user/qy1815/ephemeral/branching_results100/'
-    else:
-        num_ens = 200
+    simulation_times = np.loadtxt('simulation_times.txt')
+    s_left = simulation_times[s-300][2]
+    if s_left == 300:
+        num_ens = 300
         save_dir = '/rds/general/user/qy1815/ephemeral/branching_results300/'
-        ## load data if the file exists then run 200 times
-        ## if the file does not exist, then run 400 times
+    elif s_left == 200:
+        num_ens = 200
+        save_dir = '/rds/general/user/qy1815/ephemeral/branching_results200/'
+    elif s_left == 500:
+        num_ens = 500
+        save_dir = '/rds/general/user/qy1815/ephemeral/branching_results500/'
+
+
     WN = np.loadtxt('W_avg.csv')
     pop = np.loadtxt('pop_new.csv')
 
@@ -93,7 +96,7 @@ def main():
         # f = gzip.GzipFile(save_dir+"NewInf_R0-{}_r-{}_{}.npy.gz" .format(np.round(R0,2),np.round(r,2),en_i), "w")
         # np.save(file=f, arr=E_NewInf)
         # f.close()
-    f = gzip.GzipFile(save_dir+"NewInf_R0-{}_r-{}_com.npy.gz" .format(np.round(R0,2),np.round(r,2)), "w")
+    f = gzip.GzipFile(save_dir+"NewInf_R0-{}_r-{}.npy.gz" .format(np.round(R0,2),np.round(r,2)), "w")
     np.save(file=f, arr=E_NewInf)
     f.close()
 

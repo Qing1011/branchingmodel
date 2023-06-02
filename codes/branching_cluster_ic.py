@@ -26,70 +26,71 @@ def check_file_exists(filename):
 def main():
     s = sys.argv[1]
     s = int(s) - 1
+    es_idx = sys.argv[2]
+
     rs = np.arange(0.01, 1, 0.02)
+    rs_selected = [0,1,2,3,4,5,6,25,49] ### select some r values
+    rs = rs[rs_selected]
     R0s = np.arange(1.5, 6.5, 0.1)
+    R0s = R0s[7:] ### finish the rest of R0 values
     param_grid = {'R0': R0s, 'r' : rs}
     grid = ParameterGrid(param_grid)
     para_dict = list(grid)
     para_i = para_dict[s]
     R0 = para_i['R0']
     r = para_i['r']
-    ## check if the file exists
-    check_dir = '/rds/general/user/qy1815/ephemeral/branching_results300/'
-    file_name = check_dir+"NewInf_R0-{}_r-{}.npy.gz" .format(np.round(R0,2),np.round(r,2))
-    if check_file_exists(file_name):
+
         ## load data
-        WN = np.loadtxt('W_avg.csv')
-        pop = np.loadtxt('pop_new.csv')
+    WN = np.loadtxt('W_avg.csv')
+    pop = np.loadtxt('pop_new.csv')
 
-        num_fips = len(pop)
-        T = 60
-        num_ens = 100 ##300 ###500 intially
+    num_fips = len(pop)
+    T = 60
+    num_ens = 100 ##300 ###500 intially when R0 gets larger, we need fewer ensemble members, std is smaller
 
-        # pathogen characteristics
-        # initialize parameters
+    # pathogen characteristics
+    # initialize parameters
 
-        Z = 3 # latent period
-        Zb = 1 # scale parameter for Z
-        D = 5 # infectious period
-        Db = 1 # scale parameter for b
-        alpha = 0.1 # reporting rate 10%
+    Z = 3 # latent period
+    Zb = 1 # scale parameter for Z
+    D = 5 # infectious period
+    Db = 1 # scale parameter for b
+    alpha = 0.1 # reporting rate 10%
 
-        #initialize variables
-        # seeding
-        l0 = 1859-1 # start with New York County NY in python -1, in matlab is 1859
-        i0 = 100 ## the starting t=0, in matlab it is 1
-        # initials = (l0,i0)
+    #initialize variables
+    # seeding
+    l0 = 1859-1 # start with New York County NY in python -1, in matlab is 1859
+    i0 = 100 ## the starting t=0, in matlab it is 1
+    # initials = (l0,i0)
 
-        x_cutoff = 100
-        p = r/(R0+r)
-        weights = np.zeros(x_cutoff)
-        for i in range(x_cutoff):
-            temp1=SS.gamma(r+i)/SS.gamma(r)/SS.gamma((i+1))*np.power(p,r)*np.power((1-p),i)
-            weights[i] = temp1
-        weights_n = weights/np.sum(weights)
-        # print(r)
+    x_cutoff = 100
+    p = r/(R0+r)
+    weights = np.zeros(x_cutoff)
+    for i in range(x_cutoff):
+        temp1=SS.gamma(r+i)/SS.gamma(r)/SS.gamma((i+1))*np.power(p,r)*np.power((1-p),i)
+        weights[i] = temp1
+    weights_n = weights/np.sum(weights)
+    # print(r)
 
-        E_NewInf = np.zeros((num_ens, num_fips,T))
-        E_TotInf = np.zeros((num_ens, num_fips,T))
-        save_dir = '/rds/general/user/qy1815/ephemeral/branching_results100/'
-        
+    E_NewInf = np.zeros((num_ens, num_fips,T))
+    E_TotInf = np.zeros((num_ens, num_fips,T))
+    save_dir = '/rds/general/user/qy1815/ephemeral/branching_results300/'
+    
 
-        for en_i in range(num_ens):
-            # print(en_i)
-            E_NewInf_i, E_TotInf_i = superspreading_T_Loc(T,num_fips,(l0,i0),weights_n,pop,(Z,Zb,D,Db),WN)
-            E_NewInf[en_i,:,:] = E_NewInf_i[:,:T]
-            E_TotInf[en_i,:,:] = E_TotInf_i[:,:T]
-            # np.save('NewInf_r_{}_randm'.format(r),E_NewInf)
-            # save_dir = '/ifs/scratch/msph/ehs/qy2290/branching_results/'
-            # f = gzip.GzipFile(save_dir+"NewInf_R0-{}_r-{}_{}.npy.gz" .format(np.round(R0,2),np.round(r,2),en_i), "w")
-            # np.save(file=f, arr=E_NewInf)
-            # f.close()
-        f = gzip.GzipFile(save_dir+"NewInf_R0-{}_r-{}.npy.gz" .format(np.round(R0,2),np.round(r,2)), "w")
-        np.save(file=f, arr=E_NewInf)
-        f.close()
-    else:
-        print('file already exists')
+    for en_i in range(num_ens):
+        # print(en_i)
+        E_NewInf_i, E_TotInf_i = superspreading_T_Loc(T,num_fips,(l0,i0),weights_n,pop,(Z,Zb,D,Db),WN)
+        E_NewInf[en_i,:,:] = E_NewInf_i[:,:T]
+        E_TotInf[en_i,:,:] = E_TotInf_i[:,:T]
+        # np.save('NewInf_r_{}_randm'.format(r),E_NewInf)
+        # save_dir = '/ifs/scratch/msph/ehs/qy2290/branching_results/'
+        # f = gzip.GzipFile(save_dir+"NewInf_R0-{}_r-{}_{}.npy.gz" .format(np.round(R0,2),np.round(r,2),en_i), "w")
+        # np.save(file=f, arr=E_NewInf)
+        # f.close()
+    f = gzip.GzipFile(save_dir+"NewInf_R0-{}_r-{}_{}.npy.gz" .format(np.round(R0,2),np.round(r,2),es_idx), "w")
+    np.save(file=f, arr=E_NewInf)
+    f.close()
+    
         
 
 if __name__== "__main__":
