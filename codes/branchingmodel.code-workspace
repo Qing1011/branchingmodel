@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "../../../../Library/CloudStorage/OneDrive-cumc.columbia.edu/branchingmodel"
+		},
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"[python]": {
+			"editor.defaultFormatter": "ms-python.autopep8"
+		},
+		"python.formatting.provider": "none"
+	}
+}

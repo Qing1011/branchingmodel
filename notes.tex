@@ -95,10 +95,56 @@
 
 \maketitle
 
-\section{Motivation}
-Empirical studies have found transmission is highly variable from person to person for  several respiratory viruses, including SARS-CoV-2.
 
-\section{Model}
+\section{Framework}
+\subsection{Superspreading phenomenon/Motivation}
+Superspreading is a phenomenon in which a small number of individuals are responsible for a large number of secondary infections. The distribution of secondary infections is highly skewed. The mean number of secondary infections is much larger than the median number of secondary infections. The variance of the distribution of secondary infections is much larger than the mean number of secondary infections. The distribution of secondary infections is overdispersed.
+
+Empirical studies have shown the individual variation on disease emergence and superspreading is a normal feature of disease spread~\cite{lloyd2005superspreading}. This heterogeneity of the systems can be modeled by the branching process.
+
+Recent collecting human mobility data and the associated studies have shown that human mobility is a key factor in the spatial spread of disease. The introduction of human mobility can facilitate the prediction of the spatial spread of disease.
+
+The simulations of ODE and branching process with superspreading  on the mobility matrix when compared with the real data has demonstrated that spatial pattern of spreading is more accurate mimiced by the superspreading model, especially in the early stages of the pandemic times. 
+
+\begin{itemize}
+    \item We demonstrated the differences by the nunber of counties which is infected against time.
+    \item We define when the number of people infected per population is larger than a threshold as the infected county.
+    \item The threshold is $0.01\%$
+\end{itemize}
+
+Therefore, we propose a branching process model with superspreading on the mobility matrix to understand the temporal and spatial pattern.
+
+\subsection{Inference of the dispersion rate}
+The dispersion parameter is a key parameter in the branching process. The dispersion parameter is the variance of the offspring distribution divided by the mean of the offspring distribution. The dispersion parameter is a measure of the heterogeneity of the offspring distribution. The dispersion parameter is a measure of the variability of the offspring distribution. The dispersion parameter is a measure of the skewness of the offspring distribution. 
+
+\subsubsection{The performance of MCMC}
+We propose a baysian based algorithm to infer the dispersion rate from MCMC simulations. 
+\begin{itemize}
+    \item We fixed all the other parameters and only infer the dispersion rate, including $R_{0}$, mobility matrix, and the intial number of seed and positions of the branching.
+    \item The temporal and spatial pattern of the spreading depends on the dispersion rate. In general, the patterns are sparsed and only limited number of locations are infected in the early stage of the spreading. 
+    \item As they are stochastic processes, the uncertainty of the ensemble of the simulations is high as the time goes by. 
+    \item We can give identify the lower bound of the dispersion rate by our method.
+\end{itemize}
+
+\subsubsection{Quitify the uncertainty}
+\begin{itemize}
+    \item The uncertainty of the inferring results of the can be quantified by the profile likelihood.
+    \item The larger the dispersion rate, the less uncertainty of the ensemble of the simulations and it is closer to the no-superspreading model.
+\end{itemize}
+
+\subsection{Application to the Covid-19 data}
+We apply our model to the Covid-19 data in the US when the first wave of the pandemic. 
+
+The real world is much complicated than our model. We make the following adjustment to the model to make it can reflect the real world.
+
+\begin{itemize}
+    \item The number positions where the spreading started is more than one places, i.e. multiple entries. We follow the work in to infer the number of entries, including the five counties reported the cases in the USA when the first wave of the pandemic.
+    \item What we observed are the reported cases rather than the actual infected cases. The ratio between these two number is refered as reporting rate which is vary from place to place and from time to time. We use the results from xx paper as our reporting rate.
+    \item $R_{0}$ is time-varrying as well. We use the results from xx paper as $R_{0,t}$.
+    \item In reality, the mobility matrix is time-varying. We use the mobility matrix from safty graph as our time varrying mobility matrix.
+\end{itemize}
+
+\section{Model description}
 \subsection{Branching process}
 \subsubsection*{Galton-Watson branching process}
 
@@ -153,10 +199,8 @@ P(N(t)) = \prod_{i=1}^{N(t)} \sum_{x=1}^{\infty} \frac{1}{x} \frac{\Gamma(x+r)}{
 
 \subsection{Spatial spread}
 \subsubsection*{Qing's comments}
-The spatial spread of the disease is modeled as a branching process on a network. The network is a graph with nodes representing individuals and edges representing contacts between different locations. The number of secondary infections caused by each infected person is a random variable with a distribution that depends on the age of the individual. The distribution of $X_i$ is given by
-\begin{equation}
-P(X_i = x) = \sum_{j=1}^{x} \frac{1}{j} \pi_j,
-\end{equation}
+The spatial spread of the disease is modeled as a branching process on a network. The network is a graph with nodes representing individuals and edges representing contacts between different locations. The number of secondary infections caused by each infected person is a random variable with a distribution that depends on the age of the individual. 
+
 
 \printbibliography
 
