@@ -22,7 +22,7 @@ fips_main_sorted['poi_idx'] = fips_main_sorted.index
 def extract_mobility_matrix(data_path, save_dir, y, m):
     week_start_dates = ym_datesofweek[y + m]
     csv.field_size_limit(500 * 1024 * 1024)
-    for start_day in week_start_dates[:1]:
+    for start_day in week_start_dates[3:]:
         # print(f"Processing for start_day: {start_day}")
         # there three files which is not data
         n_file = num_files['/' + y + '/' + m +
