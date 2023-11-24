@@ -56,17 +56,17 @@ def SEIR_M_St(params, pop, initials, M, T, rand_seed, dt=1, nbi_r=False):
     x[start_pos, 1] = E0  # Exposed
 
     # Define distributions
-    if nbi_r:
-        def infection_distribution(mean_newinf, my_seed):
-            # it has the size of number of counties
-            p = nbi_r / (mean_newinf + nbi_r)
-            rng = np.random.default_rng(my_seed)
-            newinf = rng.negative_binomial(nbi_r, p)
-            return newinf
-    else:
-        def infection_distribution(mean_newinf, my_seed):
-            rng = np.random.default_rng(my_seed)
-            return rng.poisson(mean_newinf)
+    # if nbi_r:
+    #     def infection_distribution(mean_newinf, my_seed):
+    #         # it has the size of number of counties
+    #         p = nbi_r / (mean_newinf + nbi_r)
+    #         rng = np.random.default_rng(my_seed)
+    #         newinf = rng.negative_binomial(nbi_r, p)
+    #         return newinf
+    # else:
+    #     def infection_distribution(mean_newinf, my_seed):
+    #         rng = np.random.default_rng(my_seed)
+    #         return rng.poisson(mean_newinf)
 
     child_seeds = rand_seed.spawn(T*(1 / dt))
     for t in range(1, T):  # Starting from 1 because we already initialized NewInf at time 0
@@ -81,7 +81,9 @@ def SEIR_M_St(params, pop, initials, M, T, rand_seed, dt=1, nbi_r=False):
             ti = int(t*(1 / dt) + tt)
             my_seed = child_seeds[ti]
             # ds is negative
-            ds = - infection_distribution(mean_newinf, my_seed)
+            rng = np.random.default_rng(my_seed)
+            ds = - rng.poisson(mean_newinf)
+            # ds = - infection_distribution(mean_newinf, my_seed)
             NewInf[:, t] = - ds
 
             de = - ds - E/Z
@@ -135,7 +137,7 @@ def main():
     initials = (l0, i0)
     R0 = 2.5
 
-    New_Inf_s = SEIR_M_St([2.5, 3, 5], pop, initials, WN, T, ss, 1, r)
+    New_Inf_s = SEIR_M_St([2.5, 3, 5], pop, initials, WN, T, ss, 0.1, 0)
     np.savetxt(file_dir + 'New_Inf_nbi_{}_{}.csv'.format(r, es_idx),
                New_Inf_s, delimiter=',')
 

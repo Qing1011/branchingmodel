@@ -12,6 +12,7 @@
 *.cb2
 *.h5
 .*.lb
+*.gif
 
 ## Intermediate documents:
 *.dvi
