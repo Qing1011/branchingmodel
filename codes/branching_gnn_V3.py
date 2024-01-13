@@ -12,9 +12,9 @@ import scipy.stats as SSA
 class EpidemicSimulator(MessagePassing):
     def __init__(self, r, p, weight, max_time_step, prior_scale=1.):
         super(EpidemicSimulator, self).__init__(aggr='add')
-        self.r = r ## 
+        self.r = r
         # self.r = PyroModule[torch.nn.Parameter(torch.Tensor([r]))]
-        self.r = PyroSample(dist.Normal(0.1, prior_scale).to_event(2))
+        # self.r = PyroSample(dist.Normal(0.1, prior_scale).to_event(2))
 #         self.p = p
         self.p_prime = 1-p
         self.max_time_step = max_time_step
@@ -29,23 +29,29 @@ class EpidemicSimulator(MessagePassing):
     def forward(self, x, edge_index, edge_attr, step):
         return self.propagate(edge_index, size=(x.size(0), x.size(0)), x=x, edge_attr=edge_attr, step=step)
 
-    def message(self, x_j, edge_index, edge_attr, step):
-        # x_j has shape [E, num_features]
-        # edge_attr has shape [E, num_edge_features]
-        # Get the new infections from x_j.
-        new_infectors = x_j[:, 2+step:3+step]  # the infectors at time ti
-        temp = new_infectors.round().int()
-        cases = temp.squeeze().tolist()
+    def message(self, x, edge_index, edge_attr, step):
+        new_infectors = x[:, 2+step:3+step]  # the infectors at time ti
+        population = x[:, 1]
+        total_infection = torch.sum(x[:, 2:3+step], dim=1, keepdim=True)
+        rate = (population - total_infection) / population  # Compute the rate.
+        rate[rate < 0] = 0
+
+        new_effective_infectors = new_infectors*rate
+        new_infectors_int = new_effective_infectors.round().int()
+#         temp = new_infectors.round().int()
+        cases = new_infectors_int.squeeze().tolist()
         # Initialize an empty tensor to store the results
         results = torch.zeros_like(new_infectors)
         # Generate negative binomial for each size
         for i, size in enumerate(cases):
             #             print(size)
             if size > 0:
-                offspring_per_case = torch.distributions.Categorical(
-                    self.weight).sample(sample_shape=torch.Size([size]))
-            # torch.distributions.negative_binomial.NegativeBinomial(self.r,self.p_prime).sample(sample_shape=torch.Size([size]))
-                self.offspring.extend(offspring_per_case.tolist())
+                offspring_per_case = torch.distributions.negative_binomial.NegativeBinomial(
+                    self.r, self.p_prime).sample(sample_shape=torch.Size([size]))
+#                 offspring_per_case = torch.tensor([2]*size)
+                # torch.distributions.Categorical(
+                #     self.weight).sample(sample_shape=torch.Size([size])) ##cutoff version
+#                 self.offspring.extend(offspring_per_case.tolist())
                 temp_sum = offspring_per_case.sum()
             else:
                 temp_sum = 0
@@ -53,23 +59,18 @@ class EpidemicSimulator(MessagePassing):
             results[i] = temp_sum
         ###### ^^^^^^#######
         # Compute the messages.
-        messages = results * edge_attr.view(-1, 1)
+        results_aligned = results[edge_index[0]]
+        messages = results_aligned * edge_attr.view(-1, 1)
+
         return messages
 
     def update(self, aggr_out, x, step):
-        # x has shape [N, num_features], it is the original node features
         # The new infections are the aggregated messages.
         # aggr_out has shape [N, 1], it contains the updated infections
         new_infections = aggr_out
         #### Add the effective infections to the column corresponding to the current step.####
         # immu first
-        population = x[:, 1:2]
-        total_infection = torch.sum(x[:, 2:3+step], dim=1, keepdim=True)
-        rate = (population - total_infection) / population  # Compute the rate.
-        rate[rate < 0] = 0
-
-        new_effective_infections = new_infections*rate
-        new_infections_int = new_effective_infections.round().int()
+        new_infections_int = new_infections.round().int()
         # diffuse the new_infections to different times
         inf_sizes = new_infections_int.squeeze().tolist()
         for i, inf_size_i in enumerate(inf_sizes):
@@ -80,27 +81,23 @@ class EpidemicSimulator(MessagePassing):
             infectious_p = gamma_dist2.rsample(
                 sample_shape=torch.Size([inf_size_i]))
             v = torch.rand(inf_size_i)
+#             delay_days = torch.tensor([2]*inf_size_i)
             delay_days = latency_p + v * infectious_p
 #             print(step, delay_days)
             for j, delay_t in enumerate(delay_days):
-                t_j = (3+step+delay_t).ceil().int()
+                t_j = (2+step+delay_t).ceil().int()
                 if t_j > self.max_time_step:
                     pass
                 else:
                     x[i, t_j] = x[i, t_j] + 1
-        ###### ^^^^^^#######
-        # The rest of the features remain the same.
-        other_features = x[:, 2:].clone()
-        # Concatenate the new infections, the population, and the other features to get the new node features.
-        x_new = torch.cat(
-            [new_infections.clone(), population, other_features], dim=1)
-        return x_new, self.offspring
+
+        return x
 
 
 def simulate_dynamics(data, R0, r, num_steps):
     p = r/(R0+r)
     xx = np.arange(0, 100, 1)  # define the range of x values the cutoff is 200
-#     pmf = SSA.nbinom.pmf(xx, r, p)  # calculate the probability mass function
+    # pmf = SSA.nbinom.pmf(xx, r, p)  # calculate the probability mass function
     pmf = SSA.nbinom.pmf(xx, r.detach().numpy(), p.detach().numpy())
     weights_n = pmf/np.sum(pmf)
 #     print(weights_n)
@@ -108,5 +105,5 @@ def simulate_dynamics(data, R0, r, num_steps):
     T_len = x.shape[1]
     simulator = EpidemicSimulator(r, p, weights_n, max_time_step=(T_len-1))
     for ti in range(num_steps):
-        x, newcases = simulator(x, data.edge_index, data.edge_attr, ti)
-    return x, newcases
+        x = simulator(x, data.edge_index, data.edge_attr, ti)
+    return x

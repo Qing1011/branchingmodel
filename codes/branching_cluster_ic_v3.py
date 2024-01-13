@@ -49,7 +49,7 @@ def main():
     data = Data(x=xx, edge_index=edge_index, edge_attr=edge_weight)
 
     torch.manual_seed(es_idx)
-    E_NewInf_i, _ = simulate_dynamics(
+    E_NewInf_i = simulate_dynamics(
         data, R0=R0, r=torch.tensor(r), num_steps=T)
     save_dir = '/rds/general/user/qy1815/ephemeral/gnn_version/branching_R0-{}_r-{}/' .format(
         np.round(R0, 2), np.round(r, 3))
