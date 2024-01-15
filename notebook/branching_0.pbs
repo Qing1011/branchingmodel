@@ -6,4 +6,4 @@ module load anaconda3/personal
 source activate motifenv
 
 cd $HOME/branching_superspreading/python_no_cutoff/
-python3 branching_cluster_ic_v2.py 3 $PBS_ARRAY_INDEX –o output.txt
+python3 branching_cluster_ic_v2.py 0 $PBS_ARRAY_INDEX –o output.txt

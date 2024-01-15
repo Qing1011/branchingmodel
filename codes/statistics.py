@@ -68,11 +68,11 @@ def bootstrap_median_confidence_interval(data, ci=95, n_bootstraps=10000):
     return medians, lower_bound, upper_bound
 
 
-def find_best_learning_rate_and_test_mse(file_dir, x_number, slipt, lr_list, g=True):
+def find_best_learning_rate_and_test_mse(file_dir, x_number, hlayer, slipt, lr_list, g=True):
     if g:
-        sub_dir = 'regression_{}' .format(x_number)
+        sub_dir = 'regression_{}_layer_{}' .format(x_number, hlayer)
     else:
-        sub_dir = 'regression_ng_{}' .format(x_number)
+        sub_dir = 'regression_ng_{}_layer_{}' .format(x_number, hlayer)
 #     print(sub_dir)
     RES = np.zeros((10, 7))
     for lr_idx in range(70):

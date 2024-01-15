@@ -31,3 +31,23 @@ for i in 0 1 2 3 4 5 6 7 8 9;
 do
    qsub branching_${i}.pbs;
 done
+
+
+
+for i in 1.0 0.5 0.2 0.1 0.05 5.0 2.5 3.333 1.333 0.667 0.37 0.286 0.133 0.067 0.033; 
+do
+  tar -czvf branching_R0-5.5_r-${i}.tar.gz branching_R0-5.5_r-${i}/
+done
+
+
+for i in 20.0 10.0 2.0 1.0 0.5 0.05 0.025 7.4 5.0 2.5 13.333 3.333 1.333 0.667 0.37 0.286 0.133 0.067 0.033; 
+do
+mv branching_R0-5.5_r-${i}/ python_cutoff_addno/
+done
+
+
+  # Unzip the file
+#   tar -xzvf branching_R0-5.5_r-${i}.tar.gz
+mv branching_R0-5.5_r-${i}/ python_cutoff_addno/
+  # Move the unzipped directory to target_directory
+
