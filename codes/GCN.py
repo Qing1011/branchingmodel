@@ -4,7 +4,6 @@ from torch_geometric.nn import GCNConv, global_mean_pool
 from torch_geometric.data import Data, DataLoader
 import torch.nn.functional as F
 from torch_geometric.utils.convert import from_scipy_sparse_matrix, from_networkx
-from torch_geometric.nn import GCNConv, global_mean_pool, BatchNorm
 import torch.nn as nn
 
 
@@ -70,7 +69,7 @@ class GCN(torch.nn.Module):  # the simpliest model that GNN and it is classical,
             # Apply convolutional layers for GCN
             for i in range(self.num_layers):
                 x = self.convs[i](x, edge_index, edge_weight)
-                x = F.elu(x) if i < self.num_layers - 1 else x
+                x = F.elu(x)
 
             x = global_mean_pool(x, batch)
             x = self.fc(x)
@@ -100,7 +99,6 @@ class MLP(torch.nn.Module):
 
     def forward(self, data):
         x, batch = data.x, data.batch
-        # edge_index = torch.Tensor([[], []]).to(x.device).long()
 
         if self.num_layers == 0:
             # Use only the fully connected layer for a one-layer perceptron
@@ -110,7 +108,7 @@ class MLP(torch.nn.Module):
             # Apply convolutional layers for GCN
             for i in range(self.num_layers):
                 x = self.convs[i](x)
-                x = F.elu(x) if i < self.num_layers - 1 else x
+                x = F.elu(x)
 
             x = global_mean_pool(x, batch)
             x = self.fc(x)
@@ -130,17 +128,17 @@ class GCN_ng(torch.nn.Module):
         else:
             self.convs = torch.nn.ModuleList()
             # Define the convolutional layers
-            self.convs.append(nn.Linear(num_node_features, hidden_channels[0]))
+            self.convs.append(GCNConv(num_node_features, hidden_channels[0]))
             for i in range(1, num_hlayers):
                 self.convs.append(
-                    nn.Linear(hidden_channels[i-1], hidden_channels[i]))
+                    GCNConv(hidden_channels[i-1], hidden_channels[i]))
 
             # Define the fully connected layer
             self.fc = torch.nn.Linear(hidden_channels[num_hlayers-1], 1)
 
     def forward(self, data):
         x, batch = data.x, data.batch
-        # edge_index = torch.Tensor([[], []]).to(x.device).long()
+        edge_index = torch.Tensor([[], []]).to(x.device).long()
 
         if self.num_layers == 0:
             # Use only the fully connected layer for a one-layer perceptron
@@ -149,8 +147,8 @@ class GCN_ng(torch.nn.Module):
         else:
             # Apply convolutional layers for GCN
             for i in range(self.num_layers):
-                x = self.convs[i](x)
-                x = F.elu(x) if i < self.num_layers - 1 else x
+                x = self.convs[i](x, edge_index)
+                x = F.elu(x)
 
             x = global_mean_pool(x, batch)
             x = self.fc(x)

@@ -3,7 +3,7 @@
 #PBS -J 1-300
 
 module load anaconda3/personal
-source activate motifenv
+source activate pytorch_env
 
-cd $HOME/branching_superspreading/python_no_cutoff/
+cd $HOME/qing_branching/python_no_cutoff/
 python3 branching_cluster_ic_v2.py 2 $PBS_ARRAY_INDEX –o output.txt

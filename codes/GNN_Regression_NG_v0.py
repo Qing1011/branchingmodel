@@ -34,13 +34,17 @@ from GCN import *
 
 
 def main():
-    datafolder = '/rds/general/user/qy1815/ephemeral/branching_simulation_data/'
+
     # datafolder = '/Users/qingyao/Documents/branching_data/gnn_regression/'
 
     num_x = int(sys.argv[2])
     layer = int(sys.argv[3])
-    save_dir = '/rds/general/user/qy1815/home/branching_superspreading/regression_ng_{}_layer_{}/'.format(
-        num_x, layer)
+    R0 = int(sys.argv[4])
+    datafolder = '/rds/general/user/qy1815/ephemeral/branching_simulation_data_{}/'.format(
+        R0)
+
+    save_dir = '/rds/general/user/qy1815/home/branching_superspreading/regression_ng_{}_layer_{}_{}/'.format(
+        num_x, layer, R0)
 
     job_idx = int(sys.argv[1])-1  # ensemble/parameter index
     s = job_idx//70

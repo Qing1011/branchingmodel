@@ -19,7 +19,7 @@ done
 
 for i in 12.5 4.0 0.4 0.08;
 do 
-mkdir "branching_R0-1.5_r-${i}"; 
+mkdir "branching_R0-5.5_r-${i}"; 
 done
 
 for i in 20.0 10.0 2.0 1.0 0.5 0.2 0.1 0.05 0.025 7.4 5.0 2.5 13.333 3.333 1.333 0.667 0.37 0.286 0.133 0.067 0.033;
@@ -27,7 +27,7 @@ do
 mkdir "branching_R0-5.5_r-${i}"; 
 done
 
-for i in 0 1 2 3 4 5 6 7 8 9;
+for i in 0 1 2 3;
 do
    qsub branching_${i}.pbs;
 done
