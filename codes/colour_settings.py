@@ -1,1 +1,0 @@
-colours_par = {0.01:'red',0.1:'purple',0.5:'darkviolet',1:'black',5:'blue',10:'cornflowerblue','inf':'skyblue','geo':'grey',0.05:'turquoise',0.02:'seagreen',0.032:'olive'}
