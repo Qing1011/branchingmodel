@@ -69,14 +69,14 @@ def bootstrap_median_confidence_interval(data, ci=95, n_bootstraps=10000):
 
 
 def find_best_learning_rate_and_test_mse(file_dir, x_number, hlayer, slipt, lr_list, g=True):
-    if g:
-        sub_dir = 'regression_{}_layer_{}' .format(x_number, hlayer)
-    else:
-        sub_dir = 'regression_ng_{}_layer_{}' .format(x_number, hlayer)
-#     print(sub_dir)
+    # if g:
+    #     sub_dir = 'regression_{}_layer_{}' .format(x_number, hlayer)
+    # else:
+    #     sub_dir = 'regression_ng_{}_layer_{}' .format(x_number, hlayer)
+    #     print(sub_dir)
     RES = np.zeros((10, 7))
     for lr_idx in range(70):
-        with h5py.File(file_dir+sub_dir+'/res_{}_{}.hdf5'.format(slipt, lr_idx), 'r') as f:
+        with h5py.File(file_dir+'/res_{}_{}.hdf5'.format(slipt, lr_idx), 'r') as f:
             lr_pos = lr_idx % 7
             run = lr_idx // 7
             val_loss = f['val_mse'][()]
@@ -89,7 +89,7 @@ def find_best_learning_rate_and_test_mse(file_dir, x_number, hlayer, slipt, lr_l
     test_mse_best = np.infty
     test_mse_position = 0
     for lr_idx in range(most_frequent_index, 70, 7):
-        with h5py.File(file_dir+sub_dir+'/res_{}_{}.hdf5'.format(slipt, lr_idx), 'r') as f:
+        with h5py.File(file_dir+'/res_{}_{}.hdf5'.format(slipt, lr_idx), 'r') as f:
             test_mse = f['test_mse'][()]
             if test_mse < test_mse_best:
                 test_mse_best = test_mse

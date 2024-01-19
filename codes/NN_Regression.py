@@ -74,7 +74,7 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     # model = GCN_ng(num_node_features=num_x, hidden_channels=[
     #                128, 64, 16, 8], num_hlayers=layer).to(device)
-    model = GCN_ng(num_node_features=num_x, hidden_channels=[
+    model = MLP(num_node_features=num_x, hidden_channels=[
         128, 64, 16, 8], num_hlayers=layer).to(device)
     optimizer = torch.optim.Adam(
         model.parameters(), lr=my_lr, weight_decay=5e-4)
@@ -83,8 +83,8 @@ def main():
     counter = 0
     count_epochs = 0
     best = float("inf")
-    epochs = 100
-    patience = 10
+    epochs = 200
+    patience = 15
     loss_ep = []
 
     seed = int(time.time()) + es_idx
