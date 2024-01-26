@@ -24,7 +24,7 @@ We introduce a branching process model incorporating a spatial layout of US coun
 
 We tested the seeding of a range of dispersion rates and choose $100$ as it is about the smallest seed number which can spread out for all the dispersion rate we choose. We do not upload the simulation results as it is too large, but we do provide the codes to run the simulations and the notebook to reproduce the figures in the paper.
 
-## Metapopulation model with stochasty
+## Metapopulation model with stochasticity
 Compared with metapopulation simulations, the branching process model with strong superspreading produces a faster spatial invasion during outbreak onset but a slower spatial progression subsequently.
 
 We coded the metapoluation model first and then add the stochasticity to the model. The codes are in the `codes` folder. The notebook to reproduce the figures in the paper is also in the `notebook` folder.
