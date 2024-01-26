@@ -29,7 +29,7 @@ Compared with metapopulation simulations, the branching process model with stron
 
 We coded the metapoluation model first and then add the stochasticity to the model. The codes are in the `codes` folder. The notebook to reproduce the figures in the paper is also in the `notebook` folder.
 
-To create the map of the US, we use the shapefile from https://www.census.gov/geographies/mapping-files/time-series/geo/cartographic-boundary.2020.html#list-tab-1883739534. We used the 1 : 500,000 (national) resolution. The shapefile is in the `data` folder.
+To create the map of the US, we use the **county shapefile** from https://www.census.gov/geographies/mapping-files/time-series/geo/cartographic-boundary.2020.html#list-tab-1883739534. We used the 1 : 500,000 (national) resolution. 
 
 ## Inferring the superspreading parameter dispersion rate
 
