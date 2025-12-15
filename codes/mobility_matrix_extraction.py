@@ -46,7 +46,7 @@ def process_visitor_data(visitor_home_list, raw_visits, my_fips):
 
     for home, count in zip(visitor_cbg_list, normalized_visitor_array):
         if len(home) > 6:  # Ensure valid home location format
-            home_county = np.int64(home[:-6])
+            home_county = np.int64(home[:5])
             filtered_fips = my_fips[my_fips['FIPS'] == home_county]
             if not filtered_fips.empty:
                 home_indices.append(filtered_fips.index[0])
